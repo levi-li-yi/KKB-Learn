@@ -6,9 +6,11 @@ export default function create(component, props) {
   const vm = new Vue({
     // render提供h函数，用于渲染VNode
     render(h) {
+      // h函数形参：h(tag, attrs, [children])
       return h(component, {props})
     }
   }).$mount();
+  // 另一种创建组件实例的方法是：vue.extend
 
   // 通过$children获取该组件实例
   const comp = vm.$children[0];
