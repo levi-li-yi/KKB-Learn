@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="len">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><Object class="definePrototype"></Object></title>
+  </head>
+
+  <body>
+    <div id="app">
+      <p>{{name}}</p>
+      <p k-text="name"></p>
+      <p>{{age}}</p>
+      <p>
+        {{doubleAge}}
+      </p>
+      <input type="text" k-model="name">
+      <button @click="changeName">按钮</button>
+      <div k-html="html"></div>
+    </div>
+    <button id="btn">更新</button>
+    <script src="./compile.js"></script>
+    <script src="./kvue.js"></script>
+    <script>
+      const app = new KVue({
+        el: 'app',
+        data: {
+          fool: 'fool',
+          bar: {
+            key: 123
+          },
+          name: 'xiaohua',
+          age: 17
+        }
+      })
+      // app.$data.fool = 'tool'
+      console.log(app);
+      
+      document.getElementById('btn').addEventListener('click', () => {
+        app.$data.fool = 'fool' + Math.random();
+        app.$data.name = 'xiaohua' + Math.random();
+      })
+    </script>
+  </body>
+</html>
