@@ -26,4 +26,7 @@ app.listen(3000);
 
 /* 鉴权方案：
 1、session-cookie;
+2、oauth第三方认证；
+3、token jwt模式(加密认证);
+4、单点登录
  */
