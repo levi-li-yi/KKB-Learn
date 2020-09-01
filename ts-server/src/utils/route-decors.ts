@@ -23,6 +23,14 @@ type RouteOptions = {
 const router = new KoaRouter();
 const decorate = (method: HTTPMethod, path: string, options: RouteOptions = {}, router: KoaRouter) => {
   return (target, property) => {
+    // 加载中间件
+    const middlwares = [];
+    if (options.middlewares) {
+      middlwares.push(...options.middlewares)
+    }
+    // 添加路由处理
+    middlwares.push(target[property]);
+
     const url = options && options.prefix ? options.prefix + path : path;
     router[method](url, target[property])
   }
