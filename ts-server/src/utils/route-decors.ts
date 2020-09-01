@@ -26,6 +26,11 @@ const decorate = (method: HTTPMethod, path: string, options: RouteOptions = {}, 
     // 加载中间件
     const middlwares = [];
 
+    // 类级别的中间件
+    if (target.middlewares) {
+      middlwares.push(...target.middlewares)
+    }
+
     // 方法级别的中间件
     if (options.middlewares) {
       middlwares.push(...options.middlewares)
