@@ -1,6 +1,7 @@
 import * as glob from 'glob';
 import * as Koa from 'koa';
 import * as KoaRouter from 'koa-router';
+import koaBody from 'koa-body';
 
 type HTTPMethod = 'get' | 'put' | 'del' | 'post' | 'patch';
 type LoadOptions  = {
@@ -23,23 +24,26 @@ type RouteOptions = {
 const router = new KoaRouter();
 const decorate = (method: HTTPMethod, path: string, options: RouteOptions = {}, router: KoaRouter) => {
   return (target, property) => {
-    // 加载中间件
-    const middlwares = [];
+    // nextTick
+    process.nextTick(() => {
+      // 加载中间件
+      const middlwares = [];
 
-    // 类级别的中间件
-    if (target.middlewares) {
-      middlwares.push(...target.middlewares)
-    }
+      // 类级别的中间件
+      if (target.middlewares) {
+        middlwares.push(...target.middlewares)
+      }
 
-    // 方法级别的中间件
-    if (options.middlewares) {
-      middlwares.push(...options.middlewares)
-    }
-    // 添加路由处理
-    middlwares.push(target[property]);
+      // 方法级别的中间件
+      if (options.middlewares) {
+        middlwares.push(...options.middlewares)
+      }
+      // 添加路由处理
+      middlwares.push(target[property]);
 
-    const url = options && options.prefix ? options.prefix + path : path;
-    router[method](url, target[property])
+      const url = options && options.prefix ? options.prefix + path : path;
+      router[method](url, target[property]);
+    })
   }
 }
 const method = method => (path: string, options?: RouteOptions) => decorate(method, path, options, router);
@@ -47,6 +51,11 @@ const method = method => (path: string, options?: RouteOptions) => decorate(meth
 export const get = method('get');
 export const post = method('post');
 
+export const middlewares = function middlewares(middlewares: Koa.middleware[]) {
+  return function(target) {
+    target.prototype.middlewares = middlewares;
+  }
+};
 export const load = (folder: string, options: LoadOptions = {}): KoaRouter => {
   const extname = options.extname || '.{js,ts}';
   glob.sync(require('path').join(folder, `./**/*${extname}`))

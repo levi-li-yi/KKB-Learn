@@ -1,13 +1,23 @@
 import * as Koa from 'koa';
-import {get, post} from '../utils/route-decors';
-import koaBody from 'koa-body';
+import { get, post, middlewares } from '../utils/route-decors';
+import model from '../model/user';
 
-const users = [{name: 'tom', age: 20}];
+// const users = [{name: 'tom', age: 20}];
 
+@middlewares([
+  async function guard(ctx: Koa.Context, next: () => Promise<any>) {
+    if (ctx.header.token) {
+      await next();
+    } else {
+      throw '请登录';
+    }
+  }
+])
 export default class User {
   // get
   @get('/user')
-  public list(ctx: Koa.Context) {
+  public async list(ctx: Koa.Context) {
+    const users = await model.findAll();
     ctx.body = {ok:1, data: users}
   }
   // post
@@ -24,7 +34,7 @@ export default class User {
     ]
   }) 
   public add(ctx: Koa.Context) {
-    users.push(ctx.request.body);
+    // users.push(ctx.request.body);
     ctx.body = {ok:1}
   }
 }
