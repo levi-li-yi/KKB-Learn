@@ -4,6 +4,11 @@
 
 // Object.name = XXX 触发set, 执行收集依赖的effect
 
+// vue2中专门有两个class做依赖收集：
+// class Dep{}
+// class Watcher{}
+
+// vue3将class废弃了，因为class类仍在不停讨论
 // 依赖收集使用map
 // {
 //   target: {
@@ -79,7 +84,7 @@ const baseHandler = {
 }
 
 function reactive(target) {
-  const observed = new Proxy(target, baseHandler);
+  const observed = new Proxy(target, baseHandler); // 
   return observed;
 }
 
